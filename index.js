@@ -3,13 +3,18 @@ const bodyParser = require('body-parser');
 const cors = require('cors');
 
 const app = express();
-const port = 3000;
+const port = 3001;
 
 app.use(bodyParser.json());
 app.use(cors());
 
-app.get('/', (req, res) => {
-  res.send('Hello World!');
+app.post('/', (req, res) => {
+  const message = req.body.message;
+  // Do something with the message, e.g. send it to the OpenAI API
+  const response = {
+    message: `You sent the message "${message}"`
+  };
+  res.json(response);
 });
 
 app.listen(port, () => {
