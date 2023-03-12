@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
+import './App.css';
+import logo from './logo.png';
 
-function MessageInput() {
+function App() {
   const [message, setMessage] = useState('');
   const [response, setResponse] = useState('');
 
@@ -14,7 +16,9 @@ function MessageInput() {
       body: JSON.stringify({ message })
     });
     const data = await response.json();
-    setResponse(data.message);
+    const text = data.choices[0].text.trim();
+    console.log(text);
+    setResponse(text);
     setMessage('');
   };
 
@@ -23,14 +27,17 @@ function MessageInput() {
   };
 
   return (
-    <div>
-      <form onSubmit={handleSubmit}>
-        <label>
-          Message:
-          <input type="text" value={message} onChange={handleChange} />
-        </label>
-        <button type="submit">Send</button>
-      </form>
+    <div className="App">
+      <div className="message-input-container">
+        <form className="message-input-form" onSubmit={handleSubmit}>
+          <label className="search-label">
+            Please Enter A Book Title
+            <input type="text" value={message} onChange={handleChange} />
+          </label>
+          <button type="submit">Send</button>
+        </form>
+      </div>
+      <img src={logo} className="logo" alt="logo" />
       {response && (
         <div>
           <h3>Response:</h3>
@@ -41,4 +48,4 @@ function MessageInput() {
   );
 }
 
-export default MessageInput;
+export default App;
