@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import './App.css';
 import logo from './logo.png';
+import Navbar from './Navbar';
 
 function App() {
   const [message, setMessage] = useState('');
@@ -27,24 +28,30 @@ function App() {
   };
 
   return (
-    <div className="App">
-      <div className="message-input-container">
-        <form className="message-input-form" onSubmit={handleSubmit}>
-          <label className="search-label">
-            Please Enter A Book Title
-            <input type="text" value={message} onChange={handleChange} />
-          </label>
-          <button type="submit">Send</button>
-        </form>
-      </div>
-      <img src={logo} className="logo" alt="logo" />
-      {response && (
-        <div>
-          <h3>Response:</h3>
-          <p>{response}</p>
+    <>
+      <Navbar />
+      <div className="App">
+        <h1 className="Heading">Hello I am Chapterly my job is to breakdown <br /> and summarize books on finance and <br /> well-being to help you <br />improve yourself <br />and enrich your life</h1>
+        <div className="message-input-container">
+          <form className="message-input-form" onSubmit={handleSubmit}>
+            <label className="search-label">
+              Please Enter A Book Title
+              <input type="text" value={message} onChange={handleChange} />
+            </label>
+            <button type="submit">Send</button>
+          </form>
         </div>
-      )}
-    </div>
+        <img src={logo} className="logo" alt="logo" />
+        <div className="response">
+          {response && (
+            <div>
+              <h3>Response:</h3>
+              <p>{response}</p>
+            </div>
+          )}
+        </div>
+      </div>
+    </>
   );
 }
 
