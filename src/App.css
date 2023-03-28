@@ -26,6 +26,22 @@
   display: flex;
   flex-direction: column;
   color: orange;
+  width: 350px;
+  font-size: larger;
+  font-weight: bold;
+}
+
+.input {
+  height: 20px;
+  font-size: large;
+}
+
+.search {
+  background-color: #ff9800;
+  margin-top: 10px;
+  width: 70px;
+  height: 35px;
+  border-radius: 4px;
 }
 
 .Heading {
@@ -34,6 +50,7 @@
   left: 2%;
   color: orange;
 }
+
 
 .response {
   position: absolute;
@@ -81,6 +98,10 @@
   overflow: hidden;
   white-space: nowrap;
   text-overflow: ellipsis;
+}
+
+.chapter-button:hover {
+  background-color: #55390e;
 }
 
 
