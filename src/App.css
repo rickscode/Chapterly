@@ -30,7 +30,7 @@
 
 .Heading {
   position: absolute;
-  top: 25%;
+  top: 5%;
   left: 2%;
   color: orange;
 }
@@ -38,7 +38,7 @@
 .response {
   position: absolute;
   left: 15%;
-  top: calc(80% + 2rem); /* adjust the value here as needed */
+  top: calc(60% + 2rem); /* adjust the value here as needed */
   transform: translateY(-50%);
   display: flex;
   flex-direction: column;
@@ -46,13 +46,62 @@
   width: 25%; /* adjust the value here as needed */
   font: 15px arial, sans-serif;
   background-color: white;
-  border-style: solid;
-  border-width: 1px;
-  padding: 20px 25px;
-  box-shadow: 5px 5px 5px grey;
-  border-radius: 15px;
-  order: 3;
+  /* border-style: solid; */
+  /* border-width: 1px; */
+  padding: 20px 15px;
+  /* box-shadow: 5px 5px 5px grey; */
+  /* border-radius: 15px; */
+  /* border: 3; */
 }
+
+.outlined-box {
+  border: 2px solid #000;
+  padding: 1rem;
+  margin: 1rem 0;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.chapter-button {
+  background-color: #ff9800;
+  border: none;
+  color: white;
+  padding: 6px 12px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 14px;
+  margin: 4px 8px;
+  cursor: pointer;
+  border-radius: 3px;
+  width: 300px; /* Adjust this value according to your desired width */
+  height: 70px; /* Adjust this value according to your desired height */
+  box-sizing: border-box;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+
+
+/* Close button style */
+.close-button {
+  background-color: #ff9800;
+  border: none;
+  color: white;
+  padding: 6px 12px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 14px;
+  cursor: pointer;
+  border-radius: 3px;
+  position: absolute;
+  top: 5px;
+  right: 8px;
+}
+
 
 
 
@@ -102,8 +151,6 @@
   padding-bottom: 200px;
   padding-right: 25px;
   padding-left: 25px;
-  box-shadow: 5px 5px 5px grey;
-  border-radius: 15px;
   order: 3;
   }
 
