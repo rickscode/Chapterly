@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import './App.css';
 import logo from './logo.png';
 import Navbar from './Navbar';
@@ -6,6 +6,29 @@ import Navbar from './Navbar';
 function App() {
   const [message, setMessage] = useState('');
   const [response, setResponse] = useState('');
+
+  const [chapters, setChapters] = useState([]);
+  const [currentPage, setCurrentPage] = useState(1);
+  const chaptersPerPage = 7;
+
+  useEffect(() => {
+    if (response) {
+      const chaptersList = response.split('Chapter').slice(1);
+      setChapters(chaptersList);
+    }
+  }, [response]);
+
+  const handleNext = () => {
+    if (currentPage * chaptersPerPage < chapters.length) {
+      setCurrentPage(currentPage + 1);
+    }
+  };
+
+  const handlePrevious = () => {
+    if (currentPage > 1) {
+      setCurrentPage(currentPage - 1);
+    }
+  };
 
   const handleSubmit = async (event) => {
     event.preventDefault();
@@ -43,10 +66,28 @@ function App() {
         </div>
         <img src={logo} className="logo" alt="logo" />
         <div className="response">
-          {response && (
+          {chapters.length > 0 && (
             <div>
               <h3>Response:</h3>
-              <p>{response}</p>
+              <div className="outlined-box">
+                {chapters
+                  .slice(
+                    (currentPage - 1) * chaptersPerPage,
+                    currentPage * chaptersPerPage
+                  )
+                  .map((chapter, index) => (
+                    <button key={index} className="chapter-button">
+                      Chapter{chapter}
+                    </button>
+                  ))}
+              </div>
+              <div className="chapter-navigation">
+                <button onClick={handlePrevious}>Previous</button>
+                <button onClick={handleNext}>Next</button>
+              </div>
+              <button className="close-button" onClick={() => setChapters([])}>
+                Close
+              </button>
             </div>
           )}
         </div>
