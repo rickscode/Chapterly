@@ -36,68 +36,6 @@ app.post('/', async (req, res) => {
 ;
 });
 
-// app.post('/', async (req, res) => {
-//   const message = req.body.message;
-//   // const bookNameRegex = /(\b\w+\b)(?=\sby)/i; // Match any word before "by"
-//   const matchBookName = message
-//   console.log(`Message: ${message}`);
-//   console.log(`Matched book name: ${matchBookName}`);
-//   // if (matchBookName) {
-//     const bookName = matchBookName;
-//   //   const responseText = `Chapterly: Sure, here are the chapters for ${bookName}: Chapter 1, Chapter 2, Chapter 3. Please enter a chapter number if you want me to chapterize a chapter for you.`;
-//   //   res.json({
-//   //     message: responseText,
-//   //   });
-//   // } else {
-//   //   const bookName = "";
-//   //   let chapterNumber = "";
-//   //   const bookChapters = {
-//   //     "The Psychology of Money by Morgan Housel": {
-//   //       1: "No One’s Crazy",
-//   //       2: "Luck and Risk",
-//   //       // ...
-//   //     },
-//   //     "The Lean Startup by Eric Ries": {
-//   //       1: "The Entrepreneur's Guide to the Galaxy",
-//   //       2: "The Lean Startup",
-//   //       // ...
-//   //     }
-//   //   };
-//   //   const chapterNumberRegex = /(?<=chapter\s)(\d+)/;
-//   //   const matchChapterNumber = message.match(chapterNumberRegex);
-//   //   if (matchChapterNumber) {
-//   //     chapterNumber = parseInt(matchChapterNumber[0].trim());
-//   //   }
-
-//   if (bookName) {
-//       // List all the chapters of the book
-//       const response = await openai.search({
-//         model: "text-davinci-003",
-//         query: `${bookName} chapters`,
-//         documents: [],
-//         file: null,
-//         maxRerank: 200,
-//         returnMetadata: false,
-//       });
-//       const bookChaptersList = response.data.map((result) => result.text);
-//       let responseText = `Chapterly: Sure, here are the chapters for ${bookName}: `;
-//       bookChaptersList.forEach((chapter, index) => {
-//         responseText += `Chapter ${index + 1}: ${chapter}, `;
-//       });
-//       responseText = responseText.slice(0, -2); // remove the extra comma and space at the end of the string
-//       res.json({
-//         message: responseText,
-//       });
-//     } else {
-//       res.json({
-//         message: "Chapterly: Sorry, I couldn't understand your request. Please make sure you provide a book name or a book name and chapter number in your message.",
-//       });
-//     }
-//   }
-// );
-
-
-
 app.listen(port, () => {
   console.log(`Server listening on port ${port}`);
 });
