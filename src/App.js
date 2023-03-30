@@ -2,7 +2,6 @@ import React, { useState, useEffect, useRef } from 'react';
 import './App.css';
 import logo from './logo.png';
 import Navbar from './Navbar';
-import sound from './Chapter1ofmastery.mp3';
 
 function App() {
   const [message, setMessage] = useState('');
@@ -12,11 +11,12 @@ function App() {
   const [currentPage, setCurrentPage] = useState(1);
   const [bookTitle, setBookTitle] = useState('');
   const [bookAuthor, setBookAuthor] = useState('');
-  // const [isPlaying, setIsPlaying] = useState(false);
-  const [audioFile, setAudioFile] = useState('');
-
-
-  const chaptersPerPage = 7;
+  const [voices, setVoices] = useState([]);
+  const [selectedVoice, setSelectedVoice] = useState(null);
+  const utterancesRef = useRef([]);
+  const [showChapters, setShowChapters] = useState(false);
+  const [selectedChapter, setSelectedChapter] = useState(null);
+  const chaptersPerPage = 3;
 
   useEffect(() => {
     if (response) {
@@ -25,6 +25,28 @@ function App() {
     }
   }, [response]);
 
+  useEffect(() => {
+    if (window.speechSynthesis) {
+      if (window.speechSynthesis.getVoices().length === 0) {
+        window.speechSynthesis.addEventListener('voiceschanged', loadVoices);
+      } else {
+        loadVoices();
+      }
+    }
+  
+    return () => {
+      if (window.speechSynthesis) {
+        window.speechSynthesis.removeEventListener('voiceschanged', loadVoices);
+      }
+    };
+  }, []);
+  
+  const loadVoices = () => {
+    const availableVoices = window.speechSynthesis.getVoices();
+    setVoices(availableVoices);
+    setSelectedVoice(availableVoices[1]); // set the second voice as the default
+  };
+  
   const handleNext = () => {
     if (currentPage * chaptersPerPage < chapters.length) {
       setCurrentPage(currentPage + 1);
@@ -55,39 +77,13 @@ function App() {
   setBookTitle(title);
   setBookAuthor(author);
   setMessage('');
+  setShowChapters(true); // Show chapters when a book is found
 };
-  
-// const handleSubmit = async (event) => {
-//   event.preventDefault();
-//   const response = await fetch('http://localhost:3001', {
-//     method: 'POST',
-//     headers: {
-//       'Content-Type': 'application/json'
-//     },
-//     body: JSON.stringify({ message })
-//   });
-//   const data = await response.json();
-//   const text = data.choices[0].text.trim();
-//   console.log(text);
-//   setResponse(text);
-//   setBookTitle(data.title);
-//   setBookAuthor(data.author);
-//   setMessage('');
 
-//   // fetch book cover image URL
-//   const bookTitleFormatted = data.title.replace(/ /g, '+');
-//   const bookAuthorFormatted = data.author.replace(/ /g, '+');
-//   const bookCoverResponse = await fetch(`https://bookcover-api.onrender.com/bookcover?book_title=${bookTitleFormatted}&author_name=${bookAuthorFormatted}`);
-//   const bookCoverData = await bookCoverResponse.json();
-//   if (bookCoverData.error) {
-//     setBookCover(null);
-//   } else {
-//     setBookCover(bookCoverData.cover_url);
-//   }
-// };
 
 
   const handleChapterClick = async (chapter) => {
+    setSelectedChapter(chapter);
     const response = await fetch('http://localhost:3001', {
       method: 'POST',
       headers: {
@@ -101,24 +97,38 @@ function App() {
     const text = data.choices[0].text.trim();
     console.log(text);
     setSummary({ text });
-    setAudioFile({ sound });
-    console.log(audioFile); // add this line
-
   };
 
-  //audio 
-// eslint-disable-next-line
-  const audio = useRef(null);
-
-// const playAudio = () => {
-//   audio.current.play();
-//   setIsPlaying(true);
-// };
-
-// const pauseAudio = () => {
-//   audio.current.pause();
-//   setIsPlaying(false);
-// };
+  const speak = (text) => {
+    const synth = window.speechSynthesis;
+    synth.cancel(); // cancel any ongoing speech
+  
+    // Clear previous utterances
+    utterancesRef.current = [];
+  
+    const sentences = text.match(/(?:[^.!?]+[.!?]+)|\s+$/g); // split text into sentences
+    const newUtterances = sentences.map((sentence) => {
+      const utterance = new SpeechSynthesisUtterance(sentence.trim());
+      utterance.voice = selectedVoice; // set the selected voice
+      utterance.onend = handleUtteranceEnd;
+      return utterance;
+    });
+  
+    newUtterances.forEach((utterance) => {
+      synth.speak(utterance);
+    });
+  
+    utterancesRef.current = newUtterances;
+  };
+  
+  
+  const handleUtteranceEnd = (event) => {
+    utterancesRef.current = utterancesRef.current.filter(
+      (utterance) => utterance !== event.utterance
+    );
+  };
+  
+  
 
   const handleChange = (event) => {
     setMessage(event.target.value);
@@ -132,63 +142,82 @@ function App() {
         <div className="message-input-container">
           <form className="message-input-form" onSubmit={handleSubmit}>
             <label className="search-label">
-              Please Enter A Book Title
-              <input className= "input" type="text" value={message} onChange={handleChange} />
+              Please Enter A Book Title And Author
+              <input className="input" type="text" value={message} onChange={handleChange} />
             </label>
             <button className="search" type="submit">Send</button>
           </form>
-          {/* <audio ref={audio} controls>
-  <source src={ sound } type="audio/mp3" />
-</audio> */}
         </div>
         <img src={logo} className="logo" alt="logo" />
         <div className="response">
           {response && (
             <div>
-              <div className="book-info">
-                <h2>Title: {bookTitle}</h2>
-                <h4>Author: {bookAuthor}</h4>
-                {/* {bookCover && (
-    <img src={bookCover} alt={`Cover of ${bookTitle}`} className="book-cover" />
-  )} */}
-              </div>
-      <div className="outlined-box">
-        {chapters
-          .slice(
-            (currentPage - 1) * chaptersPerPage,
-            currentPage * chaptersPerPage
-          )
-          .map((chapter, index) => (
-            <button key={index} className="chapter-button" onClick={() => handleChapterClick(chapter)}>
-              Chapter{chapter}
-            </button>
-          ))}
-      </div>
-      <div className="chapter-navigation">
-        <button onClick={handlePrevious}>Previous</button>
-        <button onClick={handleNext}>Next</button>
-      </div>
-      <button className="close-button" onClick={() => setChapters([])}>
-        Close
-      </button>
-      {summary && (
-  <div className="summary-overlay">
-    <div className="summary-container">
-      <h3>Chapterized:</h3>
-      <p>{summary.text}</p>
-      <audio ref={audio} controls>
-  <source src={ sound } type="audio/mp3" />
-</audio>
-      <button className="close-button" onClick={() => setSummary(null)}>Close</button>
-    </div>
-  </div>
-)}
+              {showChapters && (
+                <>
+                  <div className="book-info">
+                    <h2>Title: {bookTitle}</h2>
+                    <h4>Author: {bookAuthor}</h4>
+                  </div>
+                  {chapters.length > 0 && (
+                    <>
+                      <div className="outlined-box">
+                        {chapters
+                          .slice(
+                            (currentPage - 1) * chaptersPerPage,
+                            currentPage * chaptersPerPage
+                          )
+                          .map((chapter, index) => (
+                            <button
+                              key={index}
+                              className="chapter-button"
+                              onClick={() => handleChapterClick(chapter)}
+                            >
+                              Chapter{chapter}
+                            </button>
+                          ))}
+                      </div>
+                      <div className="chapter-navigation">
+                        <button onClick={handlePrevious}>Previous</button>
+                        <button onClick={handleNext}>Next</button>
+                      </div>
+                    </>
+                  )}
+                  <button className="close-button" onClick={() => setShowChapters(false)}>
+                    Close
+                  </button>
+                </>
+              )}
 
-    </div>
-  )}
-</div>
-
+              {selectedChapter && summary && (
+                <div className="summary-overlay">
+                  <div className="summary-container">
+                    <h3>Chapterized:</h3>
+                    <p>{summary.text}</p>
+                    <button onClick={() => speak(summary.text)}>Play Summary</button>
+                    {/* <select
+                      value={selectedVoice ? selectedVoice.voiceURI : ''}
+                      onChange={(e) =>
+                        setSelectedVoice(
+                          voices.find((voice) => voice.voiceURI === e.target.value)
+                        )
+                      }
+                    >
+                      {voices.map((voice, index) => (
+                        <option key={index} value={voice.voiceURI}>
+                          {voice.name} ({voice.lang})
+                        </option>
+                      ))}
+                    </select> */}
+                    <button className="close-button" onClick={() => setSummary(null)}>
+                      Close
+                    </button>
+                  </div>
+                </div>
+              )}
+            </div>
+          )}
         </div>
+      </div>
     </>
   );
 }
