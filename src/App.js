@@ -1,7 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import './App.css';
 import logo from './logo.png';
-import Navbar from './Navbar';
 
 function App() {
   const [message, setMessage] = useState('');
