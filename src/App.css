@@ -1,19 +1,21 @@
 /* Default styles for desktop */
 .App {
   display: flex;
+  flex-direction: column; /* Change this line */
   justify-content: center;
   align-items: center;
   height: 100vh;
   background-color: white;
 }
 
-.logo {
+
+/* .logo {
   flex: 1;
   max-width: 50%;
   height: auto;
   object-fit: contain;
   order: 1; 
-}
+} */
 
 .message-input-container {
   flex: 1;
@@ -64,10 +66,6 @@
 
 
 .response {
-  position: absolute;
-  left: 15%;
-  top: calc(60% + 2rem); /* adjust the value here as needed */
-  transform: translateY(-50%);
   display: flex;
   flex-direction: column;
   max-width: 25%;
@@ -80,7 +78,9 @@
   /* box-shadow: 5px 5px 5px grey; */
   /* border-radius: 15px; */
   /* border: 3; */
+  margin-top: -17rem; /* Add some margin-top for spacing */
 }
+
 
 .outlined-box {
   border: 2px solid #000;
@@ -115,6 +115,13 @@
   background-color: #55390e;
 }
 
+.chapter-navigation {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+  margin-top: 16px;
+}
 
 
 /* Close button style */
@@ -129,9 +136,10 @@
   font-size: 14px;
   cursor: pointer;
   border-radius: 3px;
-  position: absolute;
+  /* Remove the following lines */
+  /* position: absolute;
   top: 5px;
-  right: 8px;
+  right: 8px; */
 }
 
 
@@ -147,10 +155,6 @@ button, .voice-select {
   background-color: #f8f8f8;
   margin-left: 8px;
 }
-
-
-
-
 
 
 
@@ -182,24 +186,22 @@ button, .voice-select {
     margin-bottom: 10px;
   }
 
+  
+
   .response {
     position: absolute;
-    left: 15%;
-    top: calc(60% + 2rem); /* adjust the value here as needed */
-    transform: translateY(-50%);
+    left: 50%;
+    top: calc(60% + 2rem);
+    transform: translate(-50%, -50%);
     display: flex;
     flex-direction: column;
-    max-width: 50%;
-    width: 50%; /* adjust the value here as needed */
+    max-width: 90%;
+    width: 90%;
     font: 15px arial, sans-serif;
     background-color: white;
-    /* border-style: solid; */
-    /* border-width: 1px; */
     padding: 20px 15px;
-    /* box-shadow: 5px 5px 5px grey; */
-    /* border-radius: 15px; */
-    /* border: 3; */
   }
+  
 
   .summary-overlay {
     position: fixed;

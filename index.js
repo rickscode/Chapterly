@@ -1,10 +1,14 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const cors = require('cors');
+// const axios = require('axios');
 const { Configuration, OpenAIApi } = require('openai');
 
 // Load environment variables from .env file
 require('dotenv').config();
+
+console.log(process.env.OPENAI_API_KEY, process.env.OPENAI_ORG_ID);
+
 
 
 // Configure OpenAI API
@@ -43,3 +47,4 @@ app.post('/', async (req, res) => {
 app.listen(port, () => {
   console.log(`Server listening on port ${port}`);
 });
+

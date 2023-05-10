@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import './App.css';
-import logo from './logo.png';
+// import logo from './logo.png';
 
 function App() {
   const [message, setMessage] = useState('');
@@ -42,6 +42,7 @@ function App() {
   
   const loadVoices = () => {
     const availableVoices = window.speechSynthesis.getVoices();
+    console.log('Available voices:', availableVoices);
     setVoices(availableVoices);
     setSelectedVoice(availableVoices[1]); // set the second voice as the default
   };
@@ -99,6 +100,7 @@ function App() {
   };
 
   const speak = (text) => {
+    console.log(text);
     const synth = window.speechSynthesis;
     synth.cancel(); // cancel any ongoing speech
   
@@ -106,12 +108,21 @@ function App() {
     utterancesRef.current = [];
   
     const sentences = text.match(/(?:[^.!?]+[.!?]+)|\s+$/g); // split text into sentences
+    // console.log('Sentences:', sentences);
+
     const newUtterances = sentences.map((sentence) => {
       const utterance = new SpeechSynthesisUtterance(sentence.trim());
       utterance.voice = selectedVoice; // set the selected voice
       utterance.onend = handleUtteranceEnd;
+
+      utterance.volume = 1;
+
+    console.log('Utterance volume:', utterance.volume);
       return utterance;
     });
+
+      console.log('Utterances:', newUtterances);
+
   
     newUtterances.forEach((utterance) => {
       synth.speak(utterance);
@@ -122,6 +133,8 @@ function App() {
   
   
   const handleUtteranceEnd = (event) => {
+    console.log('Utterance ended:', event.utterance.text);
+
     utterancesRef.current = utterancesRef.current.filter(
       (utterance) => utterance !== event.utterance
     );
@@ -135,7 +148,7 @@ function App() {
 
   return (
     <>
-      <Navbar />
+      {/* <Navbar /> */}
       <div className="App">
         <h1 className="Heading">Chapterly</h1>
         <div className="message-input-container">
@@ -147,7 +160,7 @@ function App() {
             <button className="search" type="submit">Send</button>
           </form>
         </div>
-        <img src={logo} className="logo" alt="logo" />
+        {/* <img src={logo} className="logo" alt="logo" /> */}
         <div className="response">
           {response && (
             <div>
@@ -178,12 +191,15 @@ function App() {
                       <div className="chapter-navigation">
                         <button onClick={handlePrevious}>Previous</button>
                         <button onClick={handleNext}>Next</button>
+                        <button className="close-button" onClick={() => setShowChapters(false)}>
+                    Close
+                  </button>
                       </div>
                     </>
                   )}
-                  <button className="close-button" onClick={() => setShowChapters(false)}>
+                  {/* <button className="close-button" onClick={() => setShowChapters(false)}>
                     Close
-                  </button>
+                  </button> */}
                 </>
               )}
 
@@ -193,7 +209,7 @@ function App() {
                     <h3>Chapterized:</h3>
                     <p>{summary.text}</p>
                     <button onClick={() => speak(summary.text)}>Play Summary</button>
-                    {/* <select
+                    <select
                       value={selectedVoice ? selectedVoice.voiceURI : ''}
                       onChange={(e) =>
                         setSelectedVoice(
@@ -206,7 +222,7 @@ function App() {
                           {voice.name} ({voice.lang})
                         </option>
                       ))}
-                    </select> */}
+                    </select>
                     <button className="close-button" onClick={() => setSummary(null)}>
                       Close
                     </button>
