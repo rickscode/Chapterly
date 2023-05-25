@@ -80,25 +80,33 @@ function App() {
   setShowChapters(true); // Show chapters when a book is found
 };
 
-
-
   const handleChapterClick = async (chapter) => {
     setSelectedChapter(chapter);
-    const response = await fetch('http://localhost:3001', {
+  
+    const chapterNumber = chapter.trim().split(' ')[0]; 
+  
+    const response = await fetch('http://localhost:3001/chapter-summary', {
       method: 'POST',
       headers: {
-        'Content-Type': 'application/json'
+        'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        message: `Summarize chapter "${chapter}" in 100 words and provide 3 practical life tips`
+        bookTitle: bookTitle,  
+        chapterNumber: chapterNumber, 
       }),
     });
+  
     const data = await response.json();
-    const text = data.choices[0].text.trim();
-    console.log(text);
-    setSummary({ text });
+  
+    if (data.error) {
+      console.error(data.error);
+    } else {
+      const text = data.choices[0].text.trim();
+      console.log('Summary:', text);
+      setSummary({ text });
+    }
   };
-
+  
   const speak = (text) => {
     console.log(text);
     const synth = window.speechSynthesis;
